@@ -143,7 +143,7 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      description: Import a file and processes it.
+      description: Import a file xlsx and process it, route protected by JWT
       parameters:
       - description: File to import
         in: formData
@@ -328,5 +328,5 @@ paths:
             $ref: '#/definitions/handlers.errorResponse'
       summary: Get authenticated user
       tags:
-      - user (protected)
+      - user
 swagger: "2.0"

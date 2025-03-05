@@ -129,7 +129,7 @@ const docTemplate = `{
         },
         "/import": {
             "post": {
-                "description": "Import a file and processes it.",
+                "description": "Import a file xlsx and process it, route protected by JWT",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -385,7 +385,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user (protected)"
+                    "user"
                 ],
                 "summary": "Get authenticated user",
                 "responses": {

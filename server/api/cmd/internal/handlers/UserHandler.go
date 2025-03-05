@@ -8,7 +8,7 @@ import (
 // GetUser retrieves the authenticated user's information.
 // @Summary Get authenticated user
 // @Description Retrieve the authenticated user's information using cookie HttpOnly JWT.
-// @Tags user (protected)
+// @Tags user
 // @Produce json
 // @Success 200 {object} GetUserResponse
 // @Failure 401 {object} errorResponse

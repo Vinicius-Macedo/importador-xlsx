@@ -36,7 +36,7 @@ type importFileParams struct {
 
 // ImportFile imports a file and processes it.
 // @Summary Import a file
-// @Description Import a file and processes it.
+// @Description Import a file xlsx and process it, route protected by JWT
 // @Tags import
 // @Accept multipart/form-data
 // @Produce json
