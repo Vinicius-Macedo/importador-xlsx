@@ -1,0 +1,49 @@
+services:
+  api:
+    build:
+      context: server/api
+      dockerfile: Dockerfile
+    volumes:
+      - ./server/api:/api
+    depends_on:
+      - db
+    networks:
+      - internal_network
+  spa:
+    build:
+      context: client/spa
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    volumes:
+      - ./client/spa:/spa
+      - /spa/node_modules
+    networks:
+      - internal_network
+  nginx:
+    image: "nginx:latest"
+    depends_on:
+      - spa
+      - api
+    ports:
+      - "80:80"
+    volumes:
+      - ./server/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - internal_network
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+    networks:
+      - internal_network
+    volumes:
+      - ./server/db:/var/lib/postgresql/data
+      - ./server/api/sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+networks:
+  internal_network:
+    driver: bridge

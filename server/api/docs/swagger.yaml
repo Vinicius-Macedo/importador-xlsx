@@ -1,0 +1,332 @@
+basePath: /
+definitions:
+  handlers.GetUserResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.errorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  handlers.forgotPasswordParams:
+    properties:
+      email:
+        type: string
+    type: object
+  handlers.loginParams:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  handlers.loginResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.messageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  handlers.recoverPasswordParams:
+    properties:
+      password:
+        type: string
+      token:
+        type: string
+    type: object
+  postgresrepo.CreateUserParams:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost/api
+info:
+  contact: {}
+  description: Documentation for Teste técnico
+  title: Teste técnico
+  version: "1.0"
+paths:
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all categories, route protected by JWT
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Get all categories
+      tags:
+      - Get xlsx data
+  /customers:
+    get:
+      consumes:
+      - application/json
+      description: Get all customers, route protected by JWT
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Get all customers
+      tags:
+      - Get xlsx data
+  /forget-password:
+    post:
+      consumes:
+      - application/json
+      description: Send an email with a link to reset the password
+      parameters:
+      - description: User email
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.forgotPasswordParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.messageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Forgot password
+      tags:
+      - auth
+  /import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import a file and processes it.
+      parameters:
+      - description: File to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Import a file
+      tags:
+      - import
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with the provided email and password and return a cookie
+        HttpOnly with the JWT token and the user info.
+      parameters:
+      - description: User login details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login, JWT token set in cookie
+          schema:
+            $ref: '#/definitions/handlers.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Login user
+      tags:
+      - auth
+  /logout:
+    post:
+      description: Remove all cookies from the request
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.messageResponse'
+      summary: Logout user
+      tags:
+      - auth
+  /recover-password:
+    post:
+      consumes:
+      - application/json
+      description: Recover password with the new password and the token
+      parameters:
+      - description: User new password and token
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.recoverPasswordParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.messageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Recover password
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided data. The password must be
+        at least 8 characters long, contain an uppercase letter, a lowercase letter,
+        and a symbol.
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/postgresrepo.CreateUserParams'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/postgresrepo.CreateUserParams'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Create a new user
+      tags:
+      - auth
+  /resources:
+    get:
+      consumes:
+      - application/json
+      description: Get all resources, route protected by JWT
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Get all resources
+      tags:
+      - Get xlsx data
+  /user:
+    get:
+      description: Retrieve the authenticated user's information using cookie HttpOnly
+        JWT.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.GetUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Get authenticated user
+      tags:
+      - user (protected)
+swagger: "2.0"
